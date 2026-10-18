@@ -1,0 +1,61 @@
+spring:
+  application:
+    name: ${APP_NAME:ms-seguridad}
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: ${DB_POOL_MAX_SIZE:3}
+      minimum-idle: ${DB_POOL_MIN_IDLE:1}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  liquibase:
+    enabled: false
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      username: ${REDIS_USERNAME:}
+      password: ${REDIS_PASSWORD:}
+      ssl:
+        enabled: ${REDIS_SSL:false}
+
+server:
+  port: ${SERVER_PORT:8083}
+  servlet:
+    context-path: ${API_CONTEXT_PATH:/api}
+
+eureka:
+  client:
+    enabled: ${EUREKA_ENABLED:true}
+    service-url:
+      defaultZone: ${EUREKA_DEFAULT_ZONE:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: ${EUREKA_PREFER_IP:false}
+    lease-renewal-interval-in-seconds: ${EUREKA_RENEWAL_INTERVAL:5}
+    lease-expiration-duration-in-seconds: ${EUREKA_EXPIRATION:15}
+
+app:
+  cache:
+    enabled: ${CACHE_ENABLED:true}
+    key-prefix: ${CACHE_KEY_PREFIX:ae}
+    environment: ${CACHE_ENVIRONMENT:local}
+    key-version: ${CACHE_KEY_VERSION:v1}
+    usuarios-ttl-seconds: ${CACHE_USUARIOS_TTL_SECONDS:600}
+  security:
+    jwt:
+      secret: ${SECURITY_JWT_SECRET:}
+      issuer: ${SECURITY_JWT_ISSUER:alquiler-eventos-seguridad}
+      ttl-seconds: ${SECURITY_JWT_TTL_SECONDS:1800}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    com.alquilereventos.seguridad: ${LOG_LEVEL_APP:INFO}
