@@ -38,17 +38,35 @@ mismo token por su cuenta.
 | Variable | Defecto | Descripción |
 |---|---|---|
 | `DB_URL`, `DB_USER`, `DB_PASSWORD` | — | PostgreSQL/Supabase (obligatorias) |
-| `SECURITY_JWT_SECRET` | — | Base64 de 32+ bytes (**obligatoria**) |
+| `SECURITY_JWT_SECRET` | — | Base64 de 32+ bytes (**obligatoria**; igual en todos los servicios) |
 | `SECURITY_JWT_ISSUER` | `alquiler-eventos-seguridad` | Emisor del token |
 | `SECURITY_JWT_ALGORITHM` | `HS256` | `HS256`, `HS384` o `HS512` |
 | `SECURITY_JWT_TTL_SECONDS` | `1800` | Vigencia del token |
 | `REDIS_HOST` / `REDIS_PORT` | `localhost` / `6379` | Redis compartido |
 | `CACHE_ENABLED` | `true` | Habilita/deshabilita caché |
+| `CACHE_KEY_PREFIX`, `CACHE_ENVIRONMENT`, `CACHE_KEY_VERSION` | `ae`, `local`, `v1` | Formato de claves |
+| `CACHE_USUARIOS_TTL_SECONDS` | `600` | TTL de la caché de usuarios (roles son sin TTL) |
+
+## Cómo correr
+
+```bash
+# Requiere el JAR de common instalado: cd ../alquiler-eventos-common; mvn clean install
+mvn spring-boot:run
+```
+
+Queda en `http://localhost:8083`; sus endpoints se exponen por el gateway en
+`/api/auth/**`, `/api/usuarios/**` y `/api/roles/**`. El flujo completo de la
+demo está en `../README-ENTREGA-3.md` y el paso a paso en
+`../GUIA-PRUEBAS-ENTREGA-3.md`.
 
 ## Pruebas
 
 `mvn clean test` → `JwtServiceTest` (claims/algoritmo) y
 `UsuarioSeguridadServiceTest` (autenticación, BCrypt, roles, duplicados).
 
-La configuración y el flujo completo están en `../README-ENTREGA-3.md`; el paso
-a paso de la demo, en `../GUIA-PRUEBAS-ENTREGA-3.md`.
+## Rol dentro del sistema
+
+Es el **único servicio que autentica** y emite JWT (puerto `8083`). El Gateway
+valida ese mismo token antes de rutear, y compras/alquiler lo revalidan por su
+cuenta. La tabla de puertos y el flujo general están en el README de
+`alquiler-eventos-common` y en `../README-ENTREGA-3.md`.
