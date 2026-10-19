@@ -70,3 +70,10 @@ Es el **único servicio que autentica** y emite JWT (puerto `8083`). El Gateway
 valida ese mismo token antes de rutear, y compras/alquiler lo revalidan por su
 cuenta. La tabla de puertos y el flujo general están en el README de
 `alquiler-eventos-common` y en `../README-ENTREGA-3.md`.
+
+> **Documentos compartidos del equipo** (viven en la carpeta del workspace, un
+> nivel arriba, junto a todos los repos; no están dentro de cada repo):
+> `README-ENTREGA-3.md` (plan y criterios de la Entrega 3),
+> `GUIA-PRUEBAS-ENTREGA-3.md` (demo paso a paso),
+> `GUIA-ADAPTAR-ENTREGA-3.md` (cómo replicar en `ms-alquiler`) y
+> `cambios-para-tobi.md`.
