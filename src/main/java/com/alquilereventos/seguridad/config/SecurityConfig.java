@@ -47,7 +47,7 @@ public class SecurityConfig {
         if (key.length < 32) {
             throw new IllegalStateException("SECURITY_JWT_SECRET debe tener al menos 256 bits");
         }
-        return new SecretKeySpec(key, "HmacSHA256");
+        return new SecretKeySpec(key, jceName(properties.getAlgorithm()));
     }
 
     @Bean
@@ -57,9 +57,28 @@ public class SecurityConfig {
 
     @Bean
     JwtDecoder jwtDecoder(SecretKey jwtSecretKey, JwtProperties properties) {
-        NimbusJwtDecoder decoder = NimbusJwtDecoder.withSecretKey(jwtSecretKey).macAlgorithm(MacAlgorithm.HS256).build();
+        NimbusJwtDecoder decoder = NimbusJwtDecoder.withSecretKey(jwtSecretKey)
+                .macAlgorithm(macAlgorithm(properties.getAlgorithm())).build();
         decoder.setJwtValidator(JwtValidators.createDefaultWithIssuer(properties.getIssuer()));
         return decoder;
+    }
+
+    public static MacAlgorithm macAlgorithm(String algorithm) {
+        return switch (algorithm == null ? "HS256" : algorithm.trim().toUpperCase()) {
+            case "HS256" -> MacAlgorithm.HS256;
+            case "HS384" -> MacAlgorithm.HS384;
+            case "HS512" -> MacAlgorithm.HS512;
+            default -> throw new IllegalStateException("Algoritmo JWT no soportado: " + algorithm);
+        };
+    }
+
+    public static String jceName(String algorithm) {
+        return switch (algorithm == null ? "HS256" : algorithm.trim().toUpperCase()) {
+            case "HS256" -> "HmacSHA256";
+            case "HS384" -> "HmacSHA384";
+            case "HS512" -> "HmacSHA512";
+            default -> throw new IllegalStateException("Algoritmo JWT no soportado: " + algorithm);
+        };
     }
 
     @Bean
@@ -80,7 +99,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/health").permitAll()
+                        .requestMatchers("/auth/login", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/health").permitAll()
                         .requestMatchers("/usuarios/**", "/roles/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .exceptionHandling(errors -> errors.authenticationEntryPoint(errorHandler).accessDeniedHandler(errorHandler))

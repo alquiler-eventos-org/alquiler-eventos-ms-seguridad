@@ -2,8 +2,8 @@ package com.alquilereventos.seguridad.service;
 
 import com.alquilereventos.common.entity.Usuario;
 import com.alquilereventos.seguridad.config.JwtProperties;
+import com.alquilereventos.seguridad.config.SecurityConfig;
 import com.alquilereventos.seguridad.dto.TokenResponse;
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -31,7 +31,7 @@ public class JwtService {
                 .claim("uid", usuario.getId()).claim("roles", roles).id(UUID.randomUUID().toString())
                 .issuedAt(now).expiresAt(expiresAt).build();
         String token = encoder.encode(org.springframework.security.oauth2.jwt.JwtEncoderParameters.from(
-                JwsHeader.with(MacAlgorithm.HS256).type("JWT").build(), claims)).getTokenValue();
+                JwsHeader.with(SecurityConfig.macAlgorithm(properties.getAlgorithm())).type("JWT").build(), claims)).getTokenValue();
         return new TokenResponse(token, "Bearer", properties.getTtlSeconds());
     }
 }

@@ -7,6 +7,7 @@ import com.alquilereventos.seguridad.dto.UsuarioResponse;
 import com.alquilereventos.seguridad.dto.UsuarioRolesRequest;
 import com.alquilereventos.seguridad.service.UsuarioSeguridadService;
 import com.alquilereventos.seguridad.config.cache.SecurityCacheKeys;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.cache.Cache;
@@ -18,6 +19,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 public class UsuarioController {
     private final UsuarioSeguridadService usuarios;
     private final RolRepository roles;
