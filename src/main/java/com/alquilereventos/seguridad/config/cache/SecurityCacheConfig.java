@@ -35,6 +35,7 @@ public class SecurityCacheConfig {
         CacheManager manager = RedisCacheManager.builder(connectionFactory).cacheDefaults(base)
                 .withCacheConfiguration("seguridad:usuarios", base.entryTtl(Duration.ofSeconds(properties.getUsuariosTtlSeconds())))
                 .withCacheConfiguration("seguridad:roles", base).build();
+        ((RedisCacheManager) manager).afterPropertiesSet();
         return new LoggingSecurityCacheManager(manager);
     }
     @Bean @Primary
