@@ -57,6 +57,16 @@ public class UsuarioSeguridadService {
         return usuario;
     }
 
+    /** Listado de usuarios activos para la pantalla de administracion (no se cachea: es una lista). */
+    @Transactional(readOnly = true)
+    public java.util.List<UsuarioResponse> listar() {
+        return usuarios.findAll().stream()
+                .filter(Usuario::getActivo)
+                .sorted(java.util.Comparator.comparing(Usuario::getId))
+                .map(this::respuesta)
+                .toList();
+    }
+
     @Transactional(readOnly = true)
     @Cacheable(cacheNames = "seguridad:usuarios", key = "@securityCacheKeys.usuario(#id)")
     public UsuarioResponse obtener(Integer id) {
