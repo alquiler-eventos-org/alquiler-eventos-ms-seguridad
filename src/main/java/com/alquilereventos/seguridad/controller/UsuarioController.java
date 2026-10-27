@@ -41,6 +41,12 @@ public class UsuarioController {
         return ResponseEntity.created(URI.create("/usuarios/" + creado.id())).body(creado);
     }
 
+    @GetMapping("/usuarios")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<UsuarioResponse> listar() {
+        return usuarios.listar();
+    }
+
     @GetMapping("/usuarios/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public UsuarioResponse obtener(@PathVariable Integer id) {
